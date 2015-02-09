@@ -28,7 +28,12 @@ def get_complement(nucleotide):
     'T'
     >>> get_complement('C')
     'G'
+    >>> get_complement('T')
+    'A'
+    >>> get_complement('G')
+    'C'
     """
+
     opposite = {'A':'T','T':'A','C':'G','G':'C'}
     return opposite[nucleotide]
 
@@ -80,6 +85,8 @@ def find_all_ORFs_oneframe(dna):
         returns: a list of non-nested ORFs
     >>> find_all_ORFs_oneframe("ATGCATGAATGTAGATAGATGTGCCC")
     ['ATGCATGAATGTAGA', 'ATGTGCCC']
+    >>> find_all_ORFs_oneframe("ATGCGAATGTAGCATCAAA")
+    ['ATGCGAATG']
     """
     start = 'ATG'
     i = 0
@@ -103,6 +110,8 @@ def find_all_ORFs(dna):
 
     >>> find_all_ORFs("ATGCATGAATGTAG")
     ['ATGCATGAATGTAG', 'ATGAATGTAG', 'ATG']
+    >>> find_all_ORFs("AATGCATGAATGTAG")
+    ['ATG', 'ATGCATGAATGTAG', 'ATGAATGTAG']
     """
     return find_all_ORFs_oneframe(dna) + find_all_ORFs_oneframe(dna[1:]) + find_all_ORFs_oneframe(dna[2:])
 
@@ -125,10 +134,11 @@ def longest_ORF(dna):
     >>> longest_ORF("ATGCGAATGTAGCATCAAA")
     'ATGCTACATTCGCAT'
     """
-    try:
-        return max(find_all_ORFs_both_strands(dna), key = len)
-    except (ValueError):
-        pass
+    all_ORFs = find_all_ORFs_both_strands(dna)
+    if len(all_ORFs):
+        return max(all_ORFs, key=len)
+    else:
+        return
 
 
 
@@ -157,13 +167,12 @@ def coding_strand_to_AA(dna):
         'MR'
         >>> coding_strand_to_AA("ATGCCCGCTTT")
         'MPA'
+        >>> coding_strand_to_AA("ATGCGAATGTAGCATCAAA")
+        'MRM|HQ'
     """
     aa = ''
-    for i in range(0,len(dna),3):
-        try:
+    for i in range(0,len(dna) - 2,3):
             aa += aa_table[dna[i:i+3]]
-        except (KeyError):
-            pass
     return aa
 
 def gene_finder(dna):
@@ -181,8 +190,10 @@ def gene_finder(dna):
 
 
 if __name__ == "__main__":
-    fname = 'salmonella2.txt'
-    dna =  load_seq("./data/X73525.fa")
-    with open(fname,'w') as fout:
-        for s in gene_finder(dna):
-            fout.write(s + '\n')
+    # fname = 'salmonella2.txt'
+    # dna =  load_seq("./data/X73525.fa")
+    # with open(fname,'w') as fout:
+    #     for s in gene_finder(dna):
+    #         fout.write(s + '\n')
+    import doctest
+    doctest.testmod()
