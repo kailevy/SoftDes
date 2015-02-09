@@ -190,10 +190,10 @@ def gene_finder(dna):
 
 
 if __name__ == "__main__":
-    # fname = 'salmonella2.txt'
-    # dna =  load_seq("./data/X73525.fa")
-    # with open(fname,'w') as fout:
-    #     for s in gene_finder(dna):
-    #         fout.write(s + '\n')
-    import doctest
-    doctest.testmod()
+    fname = 'salmonella2.txt'
+    dna =  load_seq("./data/X73525.fa")
+    with open(fname,'w') as fout:
+        for s in gene_finder(dna):
+            fout.write(s + '\n')
+    # import doctest
+    # doctest.testmod()
