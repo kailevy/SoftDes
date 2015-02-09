@@ -173,7 +173,6 @@ def gene_finder(dna):
         returns: a list of all amino acid sequences coded by the sequence dna.
     """
     thresh = longest_ORF_noncoding(dna,1500)
-    print thresh
     orfs = [s for s in find_all_ORFs_both_strands(dna) if len(s) > thresh]
     aa = []
     for s in orfs:
