@@ -1,8 +1,14 @@
-""" TODO: Put your header comment here """
+""" 
+Kai Levy
+SoftDes Spring 2015
+Computational Art Project
+"""
 
 import random
 from PIL import Image
 import math as Math
+import cProfile
+
 
 
 def build_random_function(min_depth, max_depth):
@@ -17,8 +23,9 @@ def build_random_function(min_depth, max_depth):
                  these functions)
     """
     # TODO: implement this
+    # func_list = [['prod',['a'],['b']],['avg',['a'],['b']]]
     func_list = [['prod',['a'],['b']],['avg',['a'],['b']],['cos_pi',['a']],['sin_pi',['a']]]
-    my_func = func_list[random.randint(0,len(func_list)-1)]
+    my_func = random.choice(func_list)
     if min_depth < 1 or (max_depth < 1 and random.randint(0,1)):
         return random.choice(['x','y'])
     else:
@@ -27,7 +34,25 @@ def build_random_function(min_depth, max_depth):
                 my_func[i] = build_random_function(min_depth - 1, max_depth - 1)
         return my_func
 
+def choose_x(a,b):
+    return a
 
+def choose_y(a,b):
+    return b
+
+def multiply(a,b):
+    return a * b
+
+def average(a,b):
+    return 0.5 * (a + b)
+
+def cos_pix(a,b):
+    return Math.cos(a * Math.pi)
+
+def sin_pix(a,b):
+    return Math.sin(a * Math.pi)
+
+funcDict = {'x': choose_x, 'y': choose_y, 'prod': multiply, 'avg': average, 'cos_pi': cos_pix, 'sin_pi': sin_pix}  
 
 def evaluate_random_function(f, x, y):
     """ Evaluate the random function f with inputs x,y
@@ -45,31 +70,33 @@ def evaluate_random_function(f, x, y):
     """
     # TODO: implement this
     
-    def choose_x(a,b):
-        return a
+    # def choose_x(a,b):
+    #     return a
 
-    def choose_y(a,b):
-        return b
+    # def choose_y(a,b):
+    #     return b
 
-    def multiply(a,b):
-        return a * b
+    # def multiply(a,b):
+    #     return a * b
 
-    def average(a,b):
-        return 0.5 * (a + b)
+    # def average(a,b):
+    #     return 0.5 * (a + b)
 
-    def cos_pix(a,b):
-        return Math.cos(a * Math.pi)
+    # def cos_pix(a,b):
+    #     return Math.cos(a * Math.pi)
 
-    def sin_pix(a,b):
-        return Math.sin(a * Math.pi)
+    # def sin_pix(a,b):
+    #     return Math.sin(a * Math.pi)
 
-    funcDict = {'x': choose_x, 'y': choose_y, 'prod': multiply, 'avg': average, 'cos_pi': cos_pix, 'sin_pi': sin_pix}
-    if len(f) == 1:
+    lenF = len(f)
+    # funcDict = {'x': choose_x, 'y': choose_y, 'prod': multiply, 'avg': average, 'cos_pi': cos_pix, 'sin_pi': sin_pix}
+    if lenF == 1:
         return funcDict[f[0]](x,y)
-    elif len(f) == 2:
+    elif lenF == 2:
         return funcDict[f[0]](evaluate_random_function(f[1],x,y),0)
     else:
         return funcDict[f[0]](evaluate_random_function(f[1],x,y),evaluate_random_function(f[2],x,y))
+
 
 
 def remap_interval(val, input_interval_start, input_interval_end, output_interval_start, output_interval_end):
@@ -149,9 +176,9 @@ def generate_art(filename, x_size=350, y_size=350):
         x_size, y_size: optional args to set image dimensions (default: 350)
     """
     # Functions for red, green, and blue channels - where the magic happens!
-    red_function = build_random_function(7,10)
-    green_function = build_random_function(7,10)
-    blue_function = build_random_function(7,10)
+    red_function = build_random_function(7,9)
+    green_function = build_random_function(7,9)
+    blue_function = build_random_function(7,9)
 
     # Create image and loop over all pixels
     im = Image.new("RGB", (x_size, y_size))
@@ -176,9 +203,10 @@ if __name__ == '__main__':
     # Create some computational art!
     # TODO: Un-comment the generate_art function call after you
     #       implement remap_interval and evaluate_random_function
-    generate_art("myart_4.png")
+    cProfile.run('generate_art("myart_4.png")')
+    # generate_art("myart_4.png")
     # print evaluate_random_function(build_random_function(7,10),0.4,0.2)
-    # print build_random_function(7,10)
+    # print build_random_function(7,9)
     # Test that PIL is installed correctly
     # TODO: Comment or remove this function call after testing PIL install
     # test_image("noise.png")
