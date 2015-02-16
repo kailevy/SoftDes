@@ -7,7 +7,8 @@ Computational Art Project
 import random
 from PIL import Image
 import math as Math
-import cProfile
+# import cProfile
+import inspect
 
 
 
@@ -23,29 +24,33 @@ def build_random_function(min_depth, max_depth):
                  these functions)
     """
     # TODO: implement this
-    # func_list = [['prod',['a'],['b']],['avg',['a'],['b']]]
-    if min_depth < 1 or (max_depth < 1 and random.randint(0,1)):
-        return random.choice(['x','y'])
+    if max_depth < 1 or (min_depth < 1 and random.randint(0,1)):
+        return [random.randint(4,5)]
     else:
-        func_list = ['prod','avg','cos_pi','sin_pi']
         index = random.randint(0,3)
         if index < 2:
-            return [func_list[index], build_random_function(min_depth - 1, max_depth - 1), build_random_function(min_depth - 1, max_depth - 1)]
+            return [index, build_random_function(min_depth - 1, max_depth - 1), build_random_function(min_depth - 1, max_depth - 1)]
         else:
-            return [func_list[index], build_random_function(min_depth - 1, max_depth - 1)]
-        # func_list = [['prod',['a'],['b']],['avg',['a'],['b']],['cos_pi',['a']],['sin_pi',['a']]]
-        # my_func = random.choice(func_list)
-        # for i in range(len(my_func)):
-        #     if type(my_func[i]) is list:
-        #         my_func[i] = build_random_function(min_depth - 1, max_depth - 1)
-        # return my_func
+            return [index, build_random_function(min_depth - 1, max_depth - 1)]
+    # if max_depth < 1 or (min_depth < 1 and random.randint(0,1)):
+    #     return random.choice([(lambda x,y: x), (lambda x,y: y)])
+    # else:
+    #     index = random.randint(0,3)
+    #     if index == 0:
+    #         arg1 = build_random_function(min_depth - 1, max_depth - 1)
+    #         arg2 = build_random_function(min_depth - 1, max_depth - 1)
+    #         return lambda x,y: arg1 * arg2
+    #     elif index == 1:
+    #         arg1 = build_random_function(min_depth - 1, max_depth - 1)
+    #         arg2 = build_random_function(min_depth - 1, max_depth - 1)
+    #         return lambda x,y: 0.5 * arg1 + arg2
+    #     elif index == 2:
+    #         arg = build_random_function(min_depth - 1, max_depth - 1)
+    #         return lambda x,y: Math.cos(arg * Math.pi)
+    #     else:
+    #         arg = build_random_function(min_depth - 1, max_depth - 1)   
+    #         return lambda x,y: Math.sin(arg * Math.pi)
 
-
-def choose_x(a,b):
-    return a
-
-def choose_y(a,b):
-    return b
 
 def multiply(a,b):
     return a * b
@@ -53,14 +58,19 @@ def multiply(a,b):
 def average(a,b):
     return 0.5 * (a + b)
 
-def cos_pix(a,b):
+def cos_pix(a):
     return Math.cos(a * Math.pi)
 
-def sin_pix(a,b):
+def sin_pix(a):
     return Math.sin(a * Math.pi)
 
-funcDict = {'x': choose_x, 'y': choose_y, 'prod': multiply, 'avg': average, 'cos_pi': cos_pix, 'sin_pi': sin_pix}  
 
+func_list = [
+    lambda a,b : a * b,                 # multiply
+    lambda a,b : 0.5 * (a + b),         # average
+    lambda a: Math.cos(a * Math.pi),    # cos_pi
+    lambda a: Math.sin(a * Math.pi)     # sin_pi
+    ]
 def evaluate_random_function(f, x, y):
     """ Evaluate the random function f with inputs x,y
         Representation of the function f is defined in the assignment writeup
@@ -76,32 +86,15 @@ def evaluate_random_function(f, x, y):
         0.02
     """
     # TODO: implement this
-    
-    # def choose_x(a,b):
-    #     return a
 
-    # def choose_y(a,b):
-    #     return b
-
-    # def multiply(a,b):
-    #     return a * b
-
-    # def average(a,b):
-    #     return 0.5 * (a + b)
-
-    # def cos_pix(a,b):
-    #     return Math.cos(a * Math.pi)
-
-    # def sin_pix(a,b):
-    #     return Math.sin(a * Math.pi)
-    lenF = len(f)
-    # funcDict = {'x': choose_x, 'y': choose_y, 'prod': multiply, 'avg': average, 'cos_pi': cos_pix, 'sin_pi': sin_pix}
-    if lenF == 1:
-        return funcDict[f[0]](x,y)
-    elif lenF == 2:
-        return funcDict[f[0]](evaluate_random_function(f[1],x,y),0)
+    if f[0] == 4:
+        return x
+    elif f[0] == 5:
+        return y
+    if f[0] < 2:
+        return func_list[f[0]](evaluate_random_function(f[1],x,y),evaluate_random_function(f[2],x,y))
     else:
-        return funcDict[f[0]](evaluate_random_function(f[1],x,y),evaluate_random_function(f[2],x,y))
+        return func_list[f[0]](evaluate_random_function(f[1],x,y))    
 
 
 
@@ -197,6 +190,9 @@ def generate_art(filename, x_size=350, y_size=350):
                     color_map(evaluate_random_function(red_function, x, y)),
                     color_map(evaluate_random_function(green_function, x, y)),
                     color_map(evaluate_random_function(blue_function, x, y))
+                    # color_map(red_function(x,y)),
+                    # color_map(green_function(x,y)),
+                    # color_map(blue_function(x,y))
                     )
 
     im.save(filename)
@@ -209,10 +205,7 @@ if __name__ == '__main__':
     # Create some computational art!
     # TODO: Un-comment the generate_art function call after you
     #       implement remap_interval and evaluate_random_function
-    cProfile.run('generate_art("myart_4.png")')
-    # generate_art("myart_4.png")
+    # cProfile.run('generate_art("myart_4.png")')
+    generate_art("myart_6.png")
     # print evaluate_random_function(build_random_function(7,10),0.4,0.2)
-    # print build_random_function(7,9)
-    # Test that PIL is installed correctly
-    # TODO: Comment or remove this function call after testing PIL install
-    # test_image("noise.png")
+    # print inspect.getsource(build_random_function(7,9))
