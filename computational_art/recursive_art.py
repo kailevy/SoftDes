@@ -24,15 +24,22 @@ def build_random_function(min_depth, max_depth):
     """
     # TODO: implement this
     # func_list = [['prod',['a'],['b']],['avg',['a'],['b']]]
-    func_list = [['prod',['a'],['b']],['avg',['a'],['b']],['cos_pi',['a']],['sin_pi',['a']]]
-    my_func = random.choice(func_list)
     if min_depth < 1 or (max_depth < 1 and random.randint(0,1)):
         return random.choice(['x','y'])
     else:
-        for i in range(len(my_func)):
-            if type(my_func[i]) is list:
-                my_func[i] = build_random_function(min_depth - 1, max_depth - 1)
-        return my_func
+        func_list = ['prod','avg','cos_pi','sin_pi']
+        index = random.randint(0,3)
+        if index < 2:
+            return [func_list[index], build_random_function(min_depth - 1, max_depth - 1), build_random_function(min_depth - 1, max_depth - 1)]
+        else:
+            return [func_list[index], build_random_function(min_depth - 1, max_depth - 1)]
+        # func_list = [['prod',['a'],['b']],['avg',['a'],['b']],['cos_pi',['a']],['sin_pi',['a']]]
+        # my_func = random.choice(func_list)
+        # for i in range(len(my_func)):
+        #     if type(my_func[i]) is list:
+        #         my_func[i] = build_random_function(min_depth - 1, max_depth - 1)
+        # return my_func
+
 
 def choose_x(a,b):
     return a
@@ -87,7 +94,6 @@ def evaluate_random_function(f, x, y):
 
     # def sin_pix(a,b):
     #     return Math.sin(a * Math.pi)
-
     lenF = len(f)
     # funcDict = {'x': choose_x, 'y': choose_y, 'prod': multiply, 'avg': average, 'cos_pi': cos_pix, 'sin_pi': sin_pix}
     if lenF == 1:
