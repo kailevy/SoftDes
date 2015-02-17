@@ -85,9 +85,9 @@ def evaluate_random_function(f, x, y, t):
     # TODO: implement this
 
     if f[0] == FLEN:
-        return x + t
+        return x
     elif f[0] == FLEN + 1:
-        return y + t
+        return y - t
     elif f[0] == FLEN + 2:
         return t
     if f[0] < FTWO:
@@ -208,7 +208,7 @@ if __name__ == '__main__':
     # TODO: Un-comment the generate_art function call after you
     #       implement remap_interval and evaluate_random_function
     # cProfile.run('generate_art("myart_8.png")')
-    generate_art("movie3/myart", 200)
+    generate_art("movie4/myart", 200)
 
     # print evaluate_random_function(build_random_function(7,10),0.4,0.2)
     # print inspect.getsource(brf_lam((lambda x,y: x),7,9))
