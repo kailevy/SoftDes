@@ -8,7 +8,7 @@ import random
 from PIL import Image
 import math as Math
 # import cProfile
-# import inspect
+import inspect
 
 func_list = [
     lambda a,b : a * b,                             # multiply
@@ -37,36 +37,38 @@ def build_random_function(min_depth, max_depth):
                  these functions)
     """
     # TODO: implement this
-    if max_depth < 1 or (min_depth < 1 and random.randint(0,1)):
-        return [random.randint(FLEN, FLEN + 2)]
-    else:
-        index = random.randint(0,FLEN - 1)
-        if index < FTWO:
-            return [index, build_random_function(min_depth - 1, max_depth - 1), build_random_function(min_depth - 1, max_depth - 1)]
-        else:
-            return [index, build_random_function(min_depth - 1, max_depth - 1)]
     # if max_depth < 1 or (min_depth < 1 and random.randint(0,1)):
-    #     return random.choice([(lambda x,y: x), (lambda x,y: y)])
+    #     return [random.randint(FLEN, FLEN + 2)]
+    # else:
+    #     index = random.randint(0,FLEN - 1)
+    #     if index < FTWO:
+    #         return [index, build_random_function(min_depth - 1, max_depth - 1), build_random_function(min_depth - 1, max_depth - 1)]
+    #     else:
+    #         return [index, build_random_function(min_depth - 1, max_depth - 1)]
+    if max_depth < 1 or (min_depth < 1 and random.randint(0,1)):
+        return random.choice([(lambda x,y: x), (lambda x,y: y)])
+    else:
+        index = random.randint(0,3)
+        f1 = build_random_function(min_depth - 1, max_depth - 1)  
+        if index == 0: 
+            f2 = build_random_function(min_depth - 1, max_depth - 1)
+            return lambda x,y: f1(x,y) * f2(x,y)
+        elif index == 1:
+            f2 = build_random_function(min_depth - 1, max_depth - 1)
+            return lambda x,y: 0.5 * (f1(x,y) + f2(x,y))
+        elif index == 2:
+            return lambda x,y: Math.cos(f1(x,y) * Math.pi)
+        else: 
+            return lambda x,y: Math.sin(f1(x,y) * Math.pi)
     # else:
     #     index = random.randint(0,3)
-    #     if index == 0:
-    #         return lambda x,y: build_random_function(min_depth - 1, max_depth - 1)(x,y) * build_random_function(min_depth - 1, max_depth - 1)(x,y)
-    #     elif index == 1:
-    #         return lambda x,y: 0.5 * (build_random_function(min_depth - 1, max_depth - 1)(x,y) + build_random_function(min_depth - 1, max_depth - 1)(x,y))
-    #     elif index == 2:
-    #         return lambda x,y: Math.cos(build_random_function(min_depth - 1, max_depth - 1)(x,y) * Math.pi)
-    #     else: 
-    #         return lambda x,y: Math.sin(build_random_function(min_depth - 1, max_depth - 1)(x,y) * Math.pi)
+    #     f1 = build_random_function(min_depth - 1, max_depth - 1)  
+    #     if index < FTWO: 
+    #         f2 = build_random_function(min_depth - 1, max_depth - 1)
+    #         return func_list[index](f1(x,y),f2(x,y))
+    #     else:
+    #         return func_list[index](f1(x,y))
 
-def brf_lam(f,min_depth,max_depth):
-    if max_depth < 1 or (min_depth < 1 and random.randint(0,1)):
-        return f
-    else:
-        index = random.randint(0,FLEN - 1)
-        if index < FTWO:
-            return brf_lam(func_list[index](f,brf_lam(f, min_depth - 1, max_depth - 1)), min_depth - 1, max_depth - 1)
-        else:
-            return brf_lam(func_list[index](f), min_depth - 1, max_depth - 1)
 
 def evaluate_random_function(f, x, y, t):
     """ Evaluate the random function f with inputs x,y
@@ -93,7 +95,7 @@ def evaluate_random_function(f, x, y, t):
     if f[0] < FTWO:
         return func_list[f[0]](evaluate_random_function(f[1],x,y,t),evaluate_random_function(f[2],x,y,t))
     else:
-        return func_list[f[0]](evaluate_random_function(f[1],x,y,t))    
+        return func_list[f[0]](evaluate_random_function(f[1],x,y,t))
 
 
 
@@ -188,12 +190,12 @@ def generate_art(filename, frames, x_size=350, y_size=350):
                 x = remap_interval(i, 0, x_size, -1, 1)
                 y = remap_interval(j, 0, y_size, -1, 1)
                 pixels[i, j] = (
-                        color_map(evaluate_random_function(red_function, x, y, t)),
-                        color_map(evaluate_random_function(green_function, x, y, t)),
-                        color_map(evaluate_random_function(blue_function, x, y, t))
-                        # color_map(red_function(x,y)),
-                        # color_map(green_function(x,y)),
-                        # color_map(blue_function(x,y))
+                        # color_map(evaluate_random_function(red_function, x, y, t)),
+                        # color_map(evaluate_random_function(green_function, x, y, t)),
+                        # color_map(evaluate_random_function(blue_function, x, y, t))
+                        color_map(red_function(x,y)),
+                        color_map(green_function(x,y)),
+                        color_map(blue_function(x,y))
                         )
 
         im.save(filename + '_' + str(k) + '.png')
@@ -208,7 +210,7 @@ if __name__ == '__main__':
     # TODO: Un-comment the generate_art function call after you
     #       implement remap_interval and evaluate_random_function
     # cProfile.run('generate_art("myart_8.png")')
-    generate_art("movie4/myart", 200)
+    generate_art("myfart", 1)
 
-    # print evaluate_random_function(build_random_function(7,10),0.4,0.2)
-    # print inspect.getsource(brf_lam((lambda x,y: x),7,9))
+    # print inspect.getsource(build_random_function(7,9))
+    # print inspect.getsource(brf_lam((lambda x,y: x),7,9)) 
