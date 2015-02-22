@@ -46,20 +46,20 @@ def build_random_function(min_depth, max_depth):
     #     else:
     #         return [index, build_random_function(min_depth - 1, max_depth - 1)]
     if max_depth < 1 or (min_depth < 1 and random.randint(0,1)):
-        return random.choice([(lambda x,y: x), (lambda x,y: y)])
+        return random.choice([(lambda x,y,t: x), (lambda x,y,t: y), (lambda x,y,t: x * y * t)])
     else:
         index = random.randint(0,3)
         f1 = build_random_function(min_depth - 1, max_depth - 1)  
         if index == 0: 
             f2 = build_random_function(min_depth - 1, max_depth - 1)
-            return lambda x,y: f1(x,y) * f2(x,y)
+            return lambda x,y,t: f1(x,y,t) * f2(x,y,t)
         elif index == 1:
             f2 = build_random_function(min_depth - 1, max_depth - 1)
-            return lambda x,y: 0.5 * (f1(x,y) + f2(x,y))
+            return lambda x,y,t: 0.5 * (f1(x,y,t) + f2(x,y,t))
         elif index == 2:
-            return lambda x,y: Math.cos(f1(x,y) * Math.pi)
+            return lambda x,y,t: Math.cos(f1(x,y,t) * Math.pi)
         else: 
-            return lambda x,y: Math.sin(f1(x,y) * Math.pi)
+            return lambda x,y,t: Math.sin(f1(x,y,t) * Math.pi)
     # else:
     #     index = random.randint(0,3)
     #     f1 = build_random_function(min_depth - 1, max_depth - 1)  
@@ -125,7 +125,9 @@ def remap_interval(val, input_interval_start, input_interval_end, output_interva
         -0.8
     """
     # TODO: implement this
-    return output_interval_start + float((val - input_interval_start)) / (input_interval_end - input_interval_start) * (output_interval_end - output_interval_start)
+    return (output_interval_start + float((val - input_interval_start)) / 
+        (input_interval_end - input_interval_start) * (output_interval_end - 
+            output_interval_start))
 
 
 def color_map(val):
@@ -193,9 +195,9 @@ def generate_art(filename, frames, x_size=350, y_size=350):
                         # color_map(evaluate_random_function(red_function, x, y, t)),
                         # color_map(evaluate_random_function(green_function, x, y, t)),
                         # color_map(evaluate_random_function(blue_function, x, y, t))
-                        color_map(red_function(x,y)),
-                        color_map(green_function(x,y)),
-                        color_map(blue_function(x,y))
+                        color_map(red_function(x,y,t)),
+                        color_map(green_function(x,y,t)),
+                        color_map(blue_function(x,y,t))
                         )
 
         im.save(filename + '_' + str(k) + '.png')
@@ -210,7 +212,7 @@ if __name__ == '__main__':
     # TODO: Un-comment the generate_art function call after you
     #       implement remap_interval and evaluate_random_function
     # cProfile.run('generate_art("myart_8.png")')
-    generate_art("myfart", 1)
+    generate_art("vis/art", 150)
 
     # print inspect.getsource(build_random_function(7,9))
     # print inspect.getsource(brf_lam((lambda x,y: x),7,9)) 
