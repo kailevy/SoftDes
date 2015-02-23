@@ -31,6 +31,37 @@ solo = AudioStream(sampling_rate, 1)
 blues_scale = [25, 28, 30, 31, 32, 35, 37, 40, 42, 43, 44, 47, 49, 52, 54, 55, 56, 59, 61]
 beats_per_minute = 45				# Let's make a slow blues solo
 
-add_note(solo, bass, blues_scale[0], 1.0, beats_per_minute, 1.0)
+top = len(blues_scale) - 1
+curr_note = 5
+add_note(solo, bass, blues_scale[5], 1.0, beats_per_minute, 1.0)
 
-solo >> "blues_solo.wav"
+licks = [ [ [1,0.5*0.8], [-2,0.5*1.2], [-1, 0.5*1.2], [1, 0.5*0.8] ], 
+[ [1,0.5], [1,0.5], [1, 0.5], [-1, 0.5] ], 
+[ [3,0.5*1.1], [2,0.5*0.9], [-1, 0.5*0.9], [-2, 0.5*1.1] ],
+[ [-1,0.5*0.8], [-1,0.5*0.8], [1, 0.5*1.2], [-1, 0.5*1.2] ],
+[ [0,0.5], [1,0.5], [0, 0.5], [-1, 0.5] ] ]
+for i in range(10):
+    lick = choice(licks)
+    for note in lick:
+        curr_note += note[0]
+        if curr_note < 0:
+            curr_note = 0
+        if curr_note > top:
+            curr_note = top - 6
+        add_note(solo, bass, blues_scale[curr_note], note[1], beats_per_minute, 1.0)
+
+for i in range(5):
+    add_note(solo, bass, blues_scale[14 - 2*i], 0.5, beats_per_minute, 1.0)
+
+backing_track = AudioStream(sampling_rate, 1)
+Wavefile.read('backing.wav', backing_track)
+
+m = Mixer()
+
+solo *= 1.0             # adjust relative volumes to taste
+backing_track *= 1.8
+
+m.add(2.25, 0, solo)    # delay the solo to match up with backing track    
+m.add(0, 0, backing_track)
+
+m.getStream(100.0) >> "slow_blues.wav"
