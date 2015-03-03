@@ -8,20 +8,6 @@ import random
 from PIL import Image
 import math as Math
 
-func_list = [
-    lambda a,b : a * b,                             # multiply
-    lambda a,b : 0.5 * (a + b),                     # average 
-    # lambda a,b : a ** 2 - b ** 2,                   # a**2 - b ** 2             (MUCH slower but kinda cool)
-    # lambda a,b : Math.sqrt(abs(a**2 - b**2)),       # sqrt a ** 2 - b ** 2    (kinda cool)
-    # lambda a : Math.exp(a / 2) - 1,                 # e ** (a / 2) - 1        (kinda cool)
-    # lambda a: Math.tan(a / 2),                      # tan of a / 2            (kinda cool)
-    # lambda a : a ** 2,                              # squared
-    lambda a : Math.cos(a * Math.pi),               # cos_pi
-    lambda a : Math.sin(a * Math.pi)                # sin_pi
-    ]
-
-FLEN = len(func_list)
-FTWO = 2
 
 def build_random_function(min_depth, max_depth):
     """ Builds a random function of depth at least min_depth and depth
@@ -34,15 +20,6 @@ def build_random_function(min_depth, max_depth):
                  (see assignment writeup for details on the representation of
                  these functions)
     """
-    # TODO: implement this
-    # if max_depth < 1 or (min_depth < 1 and random.randint(0,1)):
-    #     return [random.randint(FLEN, FLEN + 2)]
-    # else:
-    #     index = random.randint(0,FLEN - 1)
-    #     if index < FTWO:
-    #         return [index, build_random_function(min_depth - 1, max_depth - 1), build_random_function(min_depth - 1, max_depth - 1)]
-    #     else:
-    #         return [index, build_random_function(min_depth - 1, max_depth - 1)]
     if max_depth < 1 or (min_depth < 1 and random.randint(0,1)):
         return random.choice([(lambda x,y,t: x), (lambda x,y,t: y), (lambda x,y,t: x * y * t)])
     else:
@@ -58,43 +35,6 @@ def build_random_function(min_depth, max_depth):
             return lambda x,y,t: Math.cos(f1(x,y,t) * Math.pi)
         else: 
             return lambda x,y,t: Math.sin(f1(x,y,t) * Math.pi)
-    # else:
-    #     index = random.randint(0,3)
-    #     f1 = build_random_function(min_depth - 1, max_depth - 1)  
-    #     if index < FTWO: 
-    #         f2 = build_random_function(min_depth - 1, max_depth - 1)
-    #         return func_list[index](f1(x,y),f2(x,y))
-    #     else:
-    #         return func_list[index](f1(x,y))
-
-
-def evaluate_random_function(f, x, y, t):
-    """ Evaluate the random function f with inputs x,y
-        Representation of the function f is defined in the assignment writeup
-
-        f: the function to evaluate
-        x: the value of x to be used to evaluate the function
-        y: the value of y to be used to evaluate the function
-        returns: the function value
-
-        >>> evaluate_random_function(["FLEN"],-0.5, 0.75)
-        -0.5
-        >>> evaluate_random_function(["FLEN + 1"],0.1,0.02)
-        0.02
-    """
-    # TODO: implement this
-
-    if f[0] == FLEN:
-        return x
-    elif f[0] == FLEN + 1:
-        return y - t
-    elif f[0] == FLEN + 2:
-        return t
-    if f[0] < FTWO:
-        return func_list[f[0]](evaluate_random_function(f[1],x,y,t),evaluate_random_function(f[2],x,y,t))
-    else:
-        return func_list[f[0]](evaluate_random_function(f[1],x,y,t))
-
 
 
 def remap_interval(val, input_interval_start, input_interval_end, output_interval_start, output_interval_end):
@@ -190,9 +130,6 @@ def generate_art(filename, frames, x_size=350, y_size=350):
                 x = remap_interval(i, 0, x_size, -1, 1)
                 y = remap_interval(j, 0, y_size, -1, 1)
                 pixels[i, j] = (
-                        # color_map(evaluate_random_function(red_function, x, y, t)),
-                        # color_map(evaluate_random_function(green_function, x, y, t)),
-                        # color_map(evaluate_random_function(blue_function, x, y, t))
                         color_map(red_function(x,y,t)),
                         color_map(green_function(x,y,t)),
                         color_map(blue_function(x,y,t))
@@ -203,4 +140,4 @@ def generate_art(filename, frames, x_size=350, y_size=350):
 
 
 if __name__ == '__main__':
-    generate_art("vis/art", 150)
+    generate_art("fsart", 1)
