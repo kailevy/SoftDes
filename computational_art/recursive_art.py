@@ -7,8 +7,6 @@ Computational Art Project
 import random
 from PIL import Image
 import math as Math
-# import cProfile
-import inspect
 
 func_list = [
     lambda a,b : a * b,                             # multiply
@@ -205,14 +203,4 @@ def generate_art(filename, frames, x_size=350, y_size=350):
 
 
 if __name__ == '__main__':
-    # import doctest
-    # doctest.testmod()
-
-    # Create some computational art!
-    # TODO: Un-comment the generate_art function call after you
-    #       implement remap_interval and evaluate_random_function
-    # cProfile.run('generate_art("myart_8.png")')
     generate_art("vis/art", 150)
-
-    # print inspect.getsource(build_random_function(7,9))
-    # print inspect.getsource(brf_lam((lambda x,y: x),7,9)) 
