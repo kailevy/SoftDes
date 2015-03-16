@@ -35,6 +35,15 @@ class Background():
                     h,w,h)))   
         return drawables
 
+    def collided_with(self, entity):
+        """ Returns True iff the input drawable surface (entity) has
+            collided with the ground """
+        drawables = self.get_drawables()
+        rectangles = []
+        for d in drawables:
+            rectangles.append(d.get_rect())
+        return entity.get_rect().collidelist(rectangles) != -1
+
 class Player():
     """Visually represent the character"""
     def __init__(self,x_pos,y_pos):
@@ -47,10 +56,10 @@ class Player():
     def update(self):
         self.x += .1
         self.y += self.vel_y
-        self.vel_y += .01
+        self.vel_y += .001
 
     def flap(self):
-        self.vel_y -= .1
+        self.vel_y = -.3
 
     def get_drawables(self):
         w,h = self.image.get_size()
@@ -69,6 +78,13 @@ class FlappyModel():
     def get_drawables(self):
         """ Return a list of DrawableSurfaces for the model """
         return self.background.get_drawables() + self.player.get_drawables()
+
+    def is_dead(self):
+        """ Return True if the player is dead (for instance) the player
+            has collided with an obstacle, and false otherwise """
+        # TODO: modify this if the player becomes more complicated
+        player_rect = self.player.get_drawables()[0]
+        return self.background.collided_with(player_rect)
 
     def update(self):
         """ Updates the model and its constituent parts """
@@ -125,7 +141,7 @@ class FlappyBird():
     def run(self):
         """ the main runloop... loop until death """
         last_update_time = time.time()
-        while True:
+        while not(self.model.is_dead()):
             self.view.draw()
             self.model.update()
             self.controller.process_events()
