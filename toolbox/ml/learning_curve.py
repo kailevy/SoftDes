@@ -9,7 +9,7 @@ from sklearn.linear_model import LogisticRegression
 
 data = load_digits()
 print data.DESCR
-num_trials = 10
+num_trials = 50
 train_percentages = range(5,95,5)
 test_accuracies = numpy.zeros(len(train_percentages))
 
