@@ -1,0 +1,7 @@
+The accuracy on the test set generally improves as a larger percentage is used for learning.
+
+The first 50% seems to be particularly finicky and noisy, as the success can be uncharacteristically high or low, especially with a small learning set.
+
+The curve seems to settle and smooth out mostly, when I run 200 trials or more.
+
+When I change the C value to be 10**-1, the curve is unimagineably smooth, and when I change it to be 10**-100, it gets even spikier. I don't fully understand how it works.. it seems when C is lower, it is more regularized.
